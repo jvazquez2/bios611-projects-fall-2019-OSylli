@@ -1,9 +1,3 @@
----
-output:
-  html_document: default
-  pdf_document: default
----
-
 **Bios 611 Project 1** (Yilun Li)
 ===
 
