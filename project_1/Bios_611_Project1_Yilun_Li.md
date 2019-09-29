@@ -1,0 +1,173 @@
+---
+title: "Bios_611_Project1_Yilun_Li"
+author: "Yilun Li"
+date: "2019/9/24"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r, include=FALSE}
+library(data.table)
+library(tidyverse)
+library(ggplot2)
+```
+
+## Data Import and Basic Cleaning  
+
+First, we need to import the dataset and make some necessary preparation, such as removing the records with wrong date.  
+
+```{r, warning=FALSE}
+# Data Import
+setwd("C:/Users/85091/Documents/GitHub/bios611-projects-fall-2019-OSylli/project_1/data")
+data<-fread("UMD_Services_Provided_20190719.tsv")
+data$Date<-as.Date(data$Date,format="%m/%d/%Y")
+data<-data %>%
+  arrange(Date) %>%                # Arrange the data by "Date" in the ascending order
+  filter(Date<"2019-07-19")        # Remove wrong record of date (Note that the tsv file is provided on 20190719)
+```
+
+Methods of data wrangling and data visualization with *R Studio* will be used primarily, and functions in "ggplot2" and "tidyverse" would be frequently applied in this project.
+
+## Problem 1: Changes of Clothing Items over time
+
+### Tendency of the Number of Clothing Assistance & Average Clothing Items over Years
+
+Here we want to see how the number of clothing assistance and the average of clothing items change over years.
+
+```{r, echo=TRUE, warning=FALSE}
+# select columns "Date" and "Clothing Items", then define two new variables "year" and "month" based on "Date"
+data_cloth<-data %>%
+  select("Date","Clothing Items") %>%
+  drop_na() %>%
+  mutate(year=year(Date),month=month(Date))
+
+# Calculate the number of cloth assistance per year and Yearly Average of Clothing Items Assistance
+data_cloth_year<-data_cloth %>%
+  group_by(year) %>%
+  summarise(count=n(),ave=mean(`Clothing Items`))
+```
+
+With preparations above, results could be generated in figures using "ggplot". Since most records before 1997 are missing and 2019 is still ongoing, we only consider the records from 1997 to 2018.  
+
+```{r, echo=TRUE, warning=FALSE, message=FALSE, fig.width=9}
+# Occurence of Assistance in Clothing by Year (1997-2018)
+ggplot(filter(data_cloth_year,year>=1997&year<=2018),aes(x=year,y=count))+
+  geom_point()+
+  geom_smooth()+
+  labs(x="Year",
+       y="Occuerence",
+       title="Occurence of Assistance in Clothing by Year (1997-2018)")+
+  theme_minimal()
+
+# Average of Clothing Items normalized by Occurence of Assistance in Clothing (1997-2018)
+ggplot(filter(data_cloth_year,year>=1997&year<=2018),aes(x=year,y=ave))+
+  geom_point()+
+  geom_smooth()+
+  labs(x="Year",
+       y="Average Clothing Items",
+       title="Average of Clothing Items normalized by Occurence of Assistance in Clothing (1997-2018)")+
+  theme_minimal()
+```
+
+#### Results and Conclusions:
+
+We can see that there is a significant increasing tendency for the number of clothing assistance in the beginning of the new century. The biggest increase occurred from 2008 to 2009, and maybe it had something to do with the financial crisis in 2008. And now the increase has become moderate. 
+
+As for the yearly average clothing items provided, values vary from one year to another, and it seems to be fluctuating invariably with no specific tendency for a long period of time. And recently it is going through a decrease.
+
+Therefore, we conclude that there has been an increasing tendency for the number of clothing assistance since the new century arrives, while the yearly average clothing items shows no clear tendency.
+
+### Whether some seasonal characteristics exist for the variable "Clothing Items"?
+
+Next, we're going to figure out whether there exist some periodic characteristics for the column `Clothing Items`. Intuitively, since seasonal fluctuation of weather and temperature do exist, we may come up with the thought that the number of cloth assistance and average clothing items will also experience some seasonal variation and maybe more assistance is needed in cold winter. We will check if this intuition is correct below.
+
+First we need to calculating the number of cloth assistance per month and the average clothing items for each month.
+
+```{r, echo=TRUE, warning=FALSE}
+# calculation
+data_cloth_month<-data_cloth %>%
+  group_by(month) %>%
+  summarise(count=n(),ave=mean(`Clothing Items`))
+data_cloth_month$month<-as.factor(data_cloth_month$month)
+```
+
+Again, we generate the result in figures using "ggplot", and see how the variable `count` and `ave` behave in different months.  
+
+```{r, echo=TRUE, warning=FALSE, fig.width=9}
+# Barplot: Occurence of Assistance in Clothing by Month
+ggplot(data_cloth_month,aes(x=month,y=count))+
+  geom_bar(stat="identity",width=0.8,colour="black",fill="dark blue")+
+  theme_minimal()+
+  labs(x="Month",
+       y="Occuerence",
+       title="Occurence of Assistance in Clothing by Month")
+
+# Barplot: Average of Clothing Items normalized by Occurence of Assistance in each Month
+ggplot(data_cloth_month,aes(x=month,y=ave))+
+  geom_bar(stat="identity",width=0.8,colour="black",fill="dark blue")+
+  theme_minimal()+
+  labs(x="Month",
+       y="Average Clothing Items",
+       title="Average of Clothing Items normalized by Occurence of Assistance in Clothing by Month")
+```
+
+#### Results and Conclusions:
+
+As we can see, neither the number of clothing assistance nor the average clothing items show significant difference in different months. Both values change slightly throughout the year, especially the average clothing items. 
+
+Thus, we tend to believe that there is no significant seasonal variation for the number of clothing assistance or average clothing items. The tuition stated above is probably not correct.
+
+## Problem 2: Relationship between Food Pounds and Clothing Items
+
+Next we turn to figure out the relationship between the value of food pounds and clothing items, and see whether a relatively large amount of food support and a large amount of clothing assistance would tend to occur at the same time. 
+
+We first generate another data table by selecting columns `Date`, `Food Pounds` and `Clothing Items`, and drop off the records with *NA*. Then we add new columns `Food` and `Cloth` to the datatable, indicating the quantile group of `Food Pounds` or `Clothing Items` of each record. Here, four quantile group is used (i.e. "0-30%", "30%-60%", "60%-90%" and "90%-100%"). 
+
+The normal grouping ("0-25%", "25%-50%", "50%-75%" and "75%-100%") is not used here since over a quarter of values in the column `Food Pounds` is equal to zero.
+
+```{r, warning=FALSE}
+# generation of a new data table and basic cleaning and wrangling
+data_new<-data %>%
+  select(c("Date","Food Pounds","Clothing Items")) %>%
+  drop_na()
+data_new<-cbind(data_new,
+      Food=cut(data_new$`Food Pounds`,right=FALSE,
+               breaks=c(quantile(data_new$`Food Pounds`,c(0,0.3,0.6,0.9)),max(data_new$`Food Pounds`)+1),
+               labels=c("0-30%","30%-60%","60%-90%","90%-100%")),
+      Cloth=cut(data_new$`Clothing Items`,right=FALSE,
+                breaks=c(quantile(data_new$`Clothing Items`,c(0,0.3,0.6,0.9)),max(data_new$`Clothing Items`)+1),
+                labels=c("0-30%","30%-60%","60%-90%","90%-100%")))
+```
+
+
+Now, everything is prepared, and we can generate the result with both a table and a figure:  
+
+```{r, echo=TRUE, warning=FALSE, fig.width=9}
+# table of results
+xtabs(~data_new$Food+data_new$Cloth)
+
+# figure of results-Heatmap of 2D bin counts
+ggplot(data_new,aes(x=Food,y=Cloth))+
+  geom_bin2d()+
+  labs(x="Food Pounds",
+       y="Clothing Items",
+       title="Relationship between Food Pounds and Clothing Items in individual assistance case")+
+  theme_minimal()
+```
+
+#### Results and Conclusions:
+
+Based on the figure above, a large proportion of the records lie on or around the diagonal block, which means that a relatively large amount of food support and clothing items assistance tend to occur at the same time, while a smaller amount of food support tend to take place along with a smaller clothing items assistance. Results in the table can aid in clarifying this conclusion.
+
+Such result is consistent with our intuition.
+
+## Supplemental Information
+
+### 1) Background Information and Data Source
+
+The dataset is obtained from Urban Ministries of Durham (UMD), an organization that connects with the community to end homelessness and fight poverty, and has recorded the assistance to those in need, including food support, clothing items assistance, financial support and so on. You can get access to the data through this link: [UMD Data](https://github.com/biodatascience/datasci611/tree/gh-pages/data/project1_2019).
+
+### 2) Future Analysis Plan
+
+For future analysis, I'm interested in comparing the number and tendency of different service that the organization provided over the years. Methods include data wrangling and data visualization with *R Studio*, using tools in packages "ggplot2" and "tidyverse".
