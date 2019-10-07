@@ -12,6 +12,9 @@ library(data.table)
 library(tidyverse)
 library(ggplot2)
 ```
+## Purpose of Project
+
+In this project, we mainly focus on columns (variables) "Date", "Food Pounds" and "Clothing Items". We are going to explore their relationships by discussing how the number of clothing items recorded change over time. Also we'll try to figure out the relationship between the amount of food support and clothing item, and see whether a relatively large amount of food support and a large amount of clothing assistance would tend to occur at the same time.
 
 ## Data Import and Basic Cleaning  
 
@@ -170,4 +173,4 @@ The dataset is obtained from Urban Ministries of Durham (UMD), an organization t
 
 ### 2) Future Analysis Plan
 
-For future analysis, I'm interested in comparing the number and tendency of different service that the organization provided over the years. Methods include data wrangling and data visualization with *R Studio*, using tools in packages "ggplot2" and "tidyverse".
+For future analysis, I'm interested in comparing the number and tendency of different service that the organization provided over the years. Also, since we've covered the analyses on clothing item and its relationship with food pounds, I would like to provide some analyses on food pounds too, which may help us have a clearer view of their characteristics. Methods include data wrangling and data visualization with *R Studio*, using tools in packages "ggplot2" and "tidyverse".
