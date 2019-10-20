@@ -23,4 +23,4 @@ Generally speaking, in the project, techniques for linear regression and cluster
 
 ## Link to the Shiny APP
 
-You can click into the following link to view the project results: (https://osylli.shinyapps.io/project_2/)
+You can click into the following link to view the project results: https://osylli.shinyapps.io/project_2/
