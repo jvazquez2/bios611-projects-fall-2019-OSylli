@@ -80,7 +80,7 @@ Reg_plot<-function(y_variable){
     labs(x="Number of people in the Family",
          y=paste(y_variable),
          title=paste("Linear Regression of", y_variable, "on Column \"Food Provided for\""),
-         subtitle=paste("slope=", fit$coef[2,1], "; intercept=", fit$coef[1,1]))+
+         subtitle=paste("slope=", fit$coef[2,1],"(P-value=", fit$coef[2,4], "); intercept=", fit$coef[1,1],"(P-value=", fit$coef[1,4],")." ))+
     theme_minimal()
 }
 
