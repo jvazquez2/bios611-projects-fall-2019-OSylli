@@ -5,14 +5,14 @@
 
 Urban Ministries of Durham (UMD) is an organization that connects with the community to end homelessness and fight poverty. Here, we've got a dataset from the organization which has recorded the assistance to those in need. We will perform some analysis on the dataset so that we could have a better view of the data and provide the stuffs of UMD with more useful information.
 
-The dataset contains a collection of data with 79838 observations from 1990¡¯s to 2019. Variables listed below are primarily recorded for each case:    
+The dataset contains a collection of data with 79838 observations from 1990's to 2019. Variables listed below are primarily recorded for each case:    
   * **Date**: Date when the case occurred  
   * **Client File Number**: Identity of the clients  
   * **Bus Tickets (Number of)**: Number of bus tickets that each individual or family received  
   * **Food Provided for**:  Number of people in the family for which food was provided   
   * **Food Pounds**: Number of pounds of food that each individual or family received when shopping at UMD food pantry  
   * **Clothing Items**: Number of clothing items received per family or individual  
-  * **Diapers**: Number of packs of diapers received (on aver age they are receiving packs of an average of 22 diapers, and 2 packs per child.)  
+  * **Diapers**: Number of packs of diapers received (on average they are receiving packs of an average of 22 diapers, and 2 packs per child.)  
   * **School Kits**: Number of school kits received in the case  
   * **Hygiene Kits**: Number of hygiene kits received per individual or family.   
   * **Financial Support**: Money provided.  
