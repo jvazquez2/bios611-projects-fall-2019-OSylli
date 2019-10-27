@@ -138,7 +138,7 @@ server<-function(input,output){
   output$Intro_data_4<-renderText("Food Provided for---Number of people in the family for which food was provided")
   output$Intro_data_5<-renderText("Food Pounds---Number of pounds of food that each individual or family received when shopping at UMD food pantry")
   output$Intro_data_6<-renderText("Clothing Items---Number of clothing items received per family or individual")
-  output$Intro_data_7<-renderText("Diapers---Number of packs of diapers received (on aver age they are receiving packs of an average of 22 diapers, and 2 packs per child.)")
+  output$Intro_data_7<-renderText("Diapers---Number of packs of diapers received (on average they are receiving packs of an average of 22 diapers, and 2 packs per child.)")
   output$Intro_data_8<-renderText("School Kits---Number of school kits received in the case")
   output$Intro_data_9<-renderText("Hygiene Kits---Number of hygiene kits received per individual or family")
   output$Intro_data_10<-renderText("Financial Support---Money provided")
