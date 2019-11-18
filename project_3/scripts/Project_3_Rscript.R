@@ -1,4 +1,5 @@
 library(tidyverse)
+library(ggplot2)
 
 # Question 1: The trend of the number of entry to UMD over years and the possible seasonal characteristics of the number of entry.
 EntryExit<-read.delim(url("https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-OSylli/master/project_3/data/ENTRY_EXIT_191102.tsv"))
@@ -142,4 +143,7 @@ ggplot(housing_duration,aes(x=Housing,y=AVE_Dur))+
   labs(x="Housing Status",
        y="Average time of staying in UMD (Days)",
        title="The relationship between duration of stay and clients' housing status")+
-  scale_x_discrete(label=c("At risk\n of\n Homeless","Homeless","At imminent risk\n of\n losing housing","Homeless\n only under other\n federal statutes","Stably Housed"))
+  scale_x_discrete(label=c("At risk\n of\n Homeless",
+                           "Homeless","At imminent risk\n of\n losing housing",
+                           "Homeless\n only under other\n federal statutes",
+                           "Stably Housed"))
