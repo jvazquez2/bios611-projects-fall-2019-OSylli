@@ -1,5 +1,7 @@
 library(tidyverse)
 library(ggplot2)
+#install.packages("data.table",dependencies = TRUE,repos='http://cran.us.r-project.org')
+library(data.table)
 
 # Question 1: The trend of the number of entry to UMD over years and the possible seasonal characteristics of the number of entry.
 EntryExit<-read.delim(url("https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-OSylli/master/project_3/data/ENTRY_EXIT_191102.tsv"))
@@ -73,63 +75,63 @@ livecon_duration<-record %>%
 
 ggplot(livecon_duration,aes(x=LiveCondition,y=AVE_Dur))+
   geom_histogram(stat="identity",colour="black",fill="dark blue")+
-  theme_minimal()+
   labs(x="Live Condition",
        y="Average time of staying in UMD (Days)",
        title="The relationship between duration of stay and clients' live condition")+
-  scale_x_discrete(label=c("Emergency\n shelter,",
-                           "Foster\n care\n (group)\n home",
-                           "Hospital\n or\n residential\n non-\npsychiatric\n medical\n facility",
-                           "Hotel/motel\n paid for\n without\n emergency\n shelter\n voucher",
-                           "Interim\n Housing",
-                           "Jail, prison\n or\n juvenile\n detention\n facility",
-                           "Long-term\n care\n facility\n or\n nursing\n home",
+  scale_x_discrete(label=c("Emergency shelter,",
+                           "Foster care (group) home",
+                           "Hospital or residential non-psychiatric medical facility",
+                           "Hotel/motel paid for without emergency shelter voucher",
+                           "Interim Housing",
+                           "Jail, prison or juvenile detention facility",
+                           "Long-term care facility or nursing home",
                            "Other",
-                           "Owned by\n client,\n no ongoing\n housing\n subsidy",
-                           "Owned by\n client,\n with ongoing\n housing\n subsidy",
-                           "Permanent\n housing\n for\n formerly\n homeless\n persons",
-                           "Place\n not\n meant for\n habitation",
-                           "Psychiatric\n hospital\n or\n other\n psychiatric\n facility",
-                           "Rental by\n client,\n no\n ongoing\n housing\n subsidy",
-                           "Rental by\n client,\n with\n GPD\n TIP\n housing\n subsidy",
-                           "Rental by\n client,\n with\n other\n ongoing\n housing\n subsidy",
-                           "Rental by\n client,\n with\n VASH\n housing\n subsidy",
-                           "Residential\n project\n or\n halfway\n house\n with\n no\n homeless\n criteria",
-                           "Safe\n Haven",
-                           "Staying\n in a\n family\n member's\n house",
-                           "Staying\n in a\n friend's\n house",
-                           "Substance\n abuse\n treatment\n facility\n or\n detox center",
-                           "Transitional\n housing\n for\n homeless\n persons"))
+                           "Owned by client, no ongoing housing subsidy",
+                           "Owned by client, with ongoing housing subsidy",
+                           "Permanent housing for formerly homeless persons",
+                           "Place not meant for habitation",
+                           "Psychiatric hospital or other psychiatric facility",
+                           "Rental by client, no ongoing housing subsidy",
+                           "Rental by client, with GPD TIP housing subsidy",
+                           "Rental by client, with other ongoing housing subsidy",
+                           "Rental by client, with VASH housing subsidy",
+                           "Residential project or halfway house with no homeless criteria",
+                           "Safe Haven",
+                           "Staying in a family member's house",
+                           "Staying in a friend's house",
+                           "Substance abuse treatment facility or detox center",
+                           "Transitional housing for homeless persons"))+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 ggplot(livecon_duration,aes(x=LiveCondition,y=Count))+
   geom_histogram(stat="identity",colour="black",fill="dark blue")+
-  theme_minimal()+
   labs(x="Live Condition",
        y="Total times of Entry of the kind of Clients",
-       title="The relationship between the total times of Entry of the kind of Clients and clients' live condition")+
-  scale_x_discrete(label=c("Emergency\n shelter,",
-                           "Foster\n care\n (group)\n home",
-                           "Hospital\n or\n residential\n non-\npsychiatric\n medical\n facility",
-                           "Hotel/motel\n paid for\n without\n emergency\n shelter\n voucher",
-                           "Interim\n Housing",
-                           "Jail, prison\n or\n juvenile\n detention\n facility",
-                           "Long-term\n care\n facility\n or\n nursing\n home",
+       title="The relationship between the total times of Entry of the kind of Clients\n and clients' live condition")+
+  scale_x_discrete(label=c("Emergency shelter,",
+                           "Foster care (group) home",
+                           "Hospital or residential non-psychiatric medical facility",
+                           "Hotel/motel paid for without emergency shelter voucher",
+                           "Interim Housing",
+                           "Jail, prison or juvenile detention facility",
+                           "Long-term care facility or nursing home",
                            "Other",
-                           "Owned by\n client,\n no ongoing\n housing\n subsidy",
-                           "Owned by\n client,\n with ongoing\n housing\n subsidy",
-                           "Permanent\n housing\n for\n formerly\n homeless\n persons",
-                           "Place\n not\n meant for\n habitation",
-                           "Psychiatric\n hospital\n or\n other\n psychiatric\n facility",
-                           "Rental by\n client,\n no\n ongoing\n housing\n subsidy",
-                           "Rental by\n client,\n with\n GPD\n TIP\n housing\n subsidy",
-                           "Rental by\n client,\n with\n other\n ongoing\n housing\n subsidy",
-                           "Rental by\n client,\n with\n VASH\n housing\n subsidy",
-                           "Residential\n project\n or\n halfway\n house\n with\n no\n homeless\n criteria",
-                           "Safe\n Haven",
-                           "Staying\n in a\n family\n member's\n house",
-                           "Staying\n in a\n friend's\n house",
-                           "Substance\n abuse\n treatment\n facility\n or\n detox center",
-                           "Transitional\n housing\n for\n homeless\n persons"))
+                           "Owned by client, no ongoing housing subsidy",
+                           "Owned by client, with ongoing housing subsidy",
+                           "Permanent housing for formerly homeless persons",
+                           "Place not meant for habitation",
+                           "Psychiatric hospital or other psychiatric facility",
+                           "Rental by client, no ongoing housing subsidy",
+                           "Rental by client, with GPD TIP housing subsidy",
+                           "Rental by client, with other ongoing housing subsidy",
+                           "Rental by client, with VASH housing subsidy",
+                           "Residential project or halfway house with no homeless criteria",
+                           "Safe Haven",
+                           "Staying in a family member's house",
+                           "Staying in a friend's house",
+                           "Substance abuse treatment facility or detox center",
+                           "Transitional housing for homeless persons"))+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 housing_duration<-record %>%
   drop_na() %>%
