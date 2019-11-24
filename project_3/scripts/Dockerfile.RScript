@@ -1,0 +1,4 @@
+FROM rocker/verse:3.5.1
+
+RUN Rscript -e "install.packages('data.table',dependencies=TRUE,repos='http://cran.us.r-project.org')"
+RUN Rscript -e "install.packages('ggplot2')"

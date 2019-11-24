@@ -1,0 +1,6 @@
+FROM continuumio/anaconda3
+
+RUN pip install pandas==0.25.0 --user
+RUN pip install matplotlib --user
+
+
