@@ -1,6 +1,6 @@
 library(tidyverse)
 library(ggplot2)
-#install.packages("data.table",dependencies = TRUE,repos='http://cran.us.r-project.org')
+install.packages("data.table",dependencies = TRUE,repos='http://cran.us.r-project.org')
 library(data.table)
 
 # Question 1: The trend of the number of entry to UMD over years and the possible seasonal characteristics of the number of entry.

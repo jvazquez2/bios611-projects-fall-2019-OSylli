@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[21]:
+# In[1]:
 
 
 # Question 2: The relationship between duration of stay at UMD and clients' gender and race
@@ -11,7 +11,7 @@ client = client.loc[:,['Client ID', 'Client Gender', 'Client Primary Race']]
 client.head()
 
 
-# In[22]:
+# In[2]:
 
 
 import pandas as pd
@@ -20,7 +20,7 @@ entry_exit = entry_exit.loc[:,['Client ID', 'Entry Date', 'Exit Date']]
 entry_exit.head()
 
 
-# In[23]:
+# In[3]:
 
 
 import pandas as pd
@@ -37,7 +37,7 @@ record = record.dropna(axis = 0, how ='any')
 record.head()
 
 
-# In[24]:
+# In[4]:
 
 
 # Relationship between the duration of stay at UMD and Client Gender
@@ -53,7 +53,7 @@ gender_record = pd.DataFrame(gender_record)
 gender_record
 
 
-# In[25]:
+# In[7]:
 
 
 import matplotlib.pyplot as plt
@@ -64,7 +64,7 @@ plt.title('Relationship between the total number of entry and client gender')
 savefig("Q2_Relationship between the total number of entry and client gender.png")
 
 
-# In[26]:
+# In[8]:
 
 
 import matplotlib.pyplot as plt
@@ -75,11 +75,11 @@ plt.title('Relationship between the average time of stay at UMD and client gende
 savefig("Q2_Relationship between the average time of stay at UMD and client gender.png")
 
 
-# In[27]:
+# In[9]:
 
 
 # Relationship between the duration of stay at UMD and Client Race
-race_record = {'Race':[], 'Count':[], 'AVE_duration':[]}
+race_record = {'Race':[], 'Count':[], 'AVE_duration':[], 'Number':[]}
 
 for value, sub_df in record.groupby('Client Primary Race'):
     tmp_ave = sub_df['Duration (Days)'].mean()
@@ -87,6 +87,7 @@ for value, sub_df in record.groupby('Client Primary Race'):
     race_record['Count'].append(sub_df['Duration (Days)'].count())
     race_record['AVE_duration'].append(tmp_ave)
     
+race_record["Number"] = [0,1,2,3,4,5,6,7]
 race_record = pd.DataFrame(race_record)
 race_record = race_record.drop(5,axis=0) # drop the row in which "Data not collected" is recorded
 race_record = race_record.drop(4,axis=0) # drop the row in which "Client refused" is recorded
@@ -95,30 +96,34 @@ race_record = race_record.drop(3,axis=0) # drop the row in which "Client doesn't
 race_record
 
 
-# In[28]:
+# In[10]:
 
 
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import savefig
-race = race_record['Race']
 
-plt.bar(race_record['Race'],race_record['Count'])
+LABELS = ["American Indian or Alaska Native","Asian","Black or African American","Native Hawaiian or Other Pacific Islander","White"]
+
+plt.bar(race_record['Number'],race_record['Count'])
 plt.title('Relationship between the total number of entry and clients\' race')
-plt.xticks(race,rotation=90)
+plt.xticks(race_record['Number'],LABELS,rotation=90)
 
 savefig("Q2_Relationship between the total number of entry and clients\' race.png", bbox_inches = 'tight')
 
 
-# In[29]:
+# In[11]:
 
 
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import savefig
-race = race_record['Race']
+#race = [0,1,2,6,7]
 
-plt.bar(race_record['Race'],race_record['AVE_duration'])
+LABELS = ["American Indian or Alaska Native","Asian","Black or African American","Native Hawaiian or Other Pacific Islander","White"]
+
+
+plt.bar(race_record['Number'],race_record['AVE_duration'])
 plt.title('Relationship between the average time of stay at UMD and clients\' race')
-plt.xticks(race,rotation=90)
+plt.xticks(race_record['Number'],LABELS,rotation=90)
 
 savefig("Q2_Relationship between the average time of stay at UMD and clients\' race.png", bbox_inches = 'tight')
 
