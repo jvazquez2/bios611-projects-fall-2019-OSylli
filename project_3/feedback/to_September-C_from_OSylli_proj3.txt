@@ -1,0 +1,54 @@
+Hi September-C~,
+
+I think this is really a good project which is trying to focus on three topics so I think it is able to convey a lot of useful conclusions. 
+
+Data source, topics of the project, the corresponding source of datasets used are clearly communicated in the README file.
+
+A small piece of suggestion is that, when calculating the time of stay, maybe you can try to use the R function "as.Date()" to switch the string into a date object, and calculate the duration of stay by doing a simple subtraction.
+
+I think that's more convenient than dealing with a string and the scripts can become more readable.
+
+Also, you can make more explanation about your results for the viewers too!
+
+Below are some of the other comments for your inference:
+
+1. Is the project organized modularly, with Make as the workflow manager?
+    The project structure is clear and almost complete, with a README file to make an introduction to the project, and has created folder "data", "feedback", "results" and "scripts" as required.
+    And I think it would be better if you can also add your "Dockerfile" and "Makefile" to the ./script/ folder of your project repository so that it could be more complete.
+
+2. Does the project use both Python (Pandas specifically) and R (Tidyverse specifically) scripts?
+  Yes. "pandas" is applied in the .py script to process data in the file ./project_3/script/data_wrangling.py, 
+  and the R package "tidyverse" is used in the .Rmd file under the same folder. 
+
+3. Is Docker used to define execution environments appropriately?
+  It seems that the Dockerfile has not been uploaded to the project repository. Looking forward to it!
+
+4. Are the plots appropriate for the data types, the hypotheses being tested, and the points being communicated?
+  I think it is a good choice to use histogram. But as for the completeness, actually I'm not really sure whether you've included the figures and results for the third question of your project since I'm not able to find it. Also looking forward to that!~
+
+5. How can the project be organized or documented more clearly?
+  Generally speaking I think it is really clear and tidy. Maybe you can add some comments to your R and Python scripts, so that the purpose of each step could be made more clearly for the viewers.
+
+6. Is the purpose of the project communicated clearly?
+  Yes, I think so. Purpose of project has been shown clearly in the part "Questions Explored" of the README file,
+
+7. Does the purpose of the project make sense from the client’s point of view? How could the project better serve the client?
+  The first question is that, the audience of the project is not indicated in the README file, maybe you can add it into your project.
+  And from the questions you've raised, I guess the audience is the staffs of UMD. 
+  If it is the case, I think the question "How the length of stay relates to client demographics" and "How does client recurrence relate to clients who are chronically homeless, youth who age out of the foster care system, and other demographics/community trends?" can provide some useful information for the staffs so that they could make better preparations and offer in-time help.
+  But I'm not really sure the reason why "Destinations and reasons for leaving" is considered. Could you please give more explanation about it? I think this can help to communicate your thoughts better to the audience.
+
+8. Is the source of the data made clear? (Remember that this project can be part of your public portfolios, so people not familiar with UMD may see it).
+  Yes, source of data and data used in the project is communicated clearly in the README file.
+
+9. Is the interpretation of figures clearly explained?
+  The .Rmd file in the ./results/ folder has applied the codes to generate histograms, maybe you can give more words and explanations about the messages being communicated in the figures, so that the audience could be less likely to miss the points you're trying to clarify.
+  For example, you can add a title to each of your figures and histograms to help the views comprehend your script.
+
+10. Is the purpose and interpretation of analysis steps clearly communicated?
+  Yes. Methods and tools for analysis, such as R, Python, Make and Docker and their functions are included in the README file.
+
+11. Are overall take-home messages clearly communicated?
+  From my prospective, more explanations of the figures could be added to your project folder. Maybe these information could be added to the final HTML file for the report.
+
+Anyway, thank you for all of your efforts on the project and wish you a successful presentation! 
