@@ -72,7 +72,7 @@ from matplotlib.pyplot import savefig
 # Generate a barplot to show relationship between the total number of entry and client gender
 plt.bar(gender_record['Gender'],gender_record['Count'])
 plt.title('Relationship between the total number of entry and client gender')
-savefig("Q2_Relationship between the total number of entry and client gender.png", bbox_inches = 'tight')
+savefig("Q2_Relationship_between_the_total_number_of_entry_and_client_gender.png", bbox_inches = 'tight')
 
 
 # In[13]:
@@ -85,7 +85,7 @@ from matplotlib.pyplot import savefig
 # Generate a barplot to show the relationship between the average time of stay at UMD and client gender
 plt.bar(gender_record['Gender'],gender_record['AVE_duration'])
 plt.title('Relationship between the average time of stay at UMD and client gender')
-savefig("Q2_Relationship between the average time of stay at UMD and client gender.png", bbox_inches = 'tight')
+savefig("Q2_Relationship_between_the_average_time_of_stay_at_UMD_and_client_gender.png", bbox_inches = 'tight')
 
 
 # In[9]:
@@ -126,7 +126,7 @@ plt.bar(race_record['Number'],race_record['Count'])
 plt.title('Relationship between the total number of entry and clients\' race')
 plt.xticks(race_record['Number'],LABELS,rotation=90)
 
-savefig("Q2_Relationship between the total number of entry and clients\' race.png", bbox_inches = 'tight')
+savefig("Q2_Relationship_between_the_total_number_of_entry_and_clients_race.png", bbox_inches = 'tight')
 
 
 # In[11]:
@@ -144,7 +144,7 @@ plt.bar(race_record['Number'],race_record['AVE_duration'])
 plt.title('Relationship between the average time of stay at UMD and clients\' race')
 plt.xticks(race_record['Number'],LABELS,rotation=90)
 
-savefig("Q2_Relationship between the average time of stay at UMD and clients\' race.png", bbox_inches = 'tight')
+savefig("Q2_Relationship_between_the_average_time_of_stay_at_UMD_and_clients_race.png", bbox_inches = 'tight')
 
 
 # In[ ]:
