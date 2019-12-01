@@ -11,7 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Background Information and Data Source
 
-[Urban Ministries of Durham](http://www.umdurham.org/) (UMD) is an organization that connects with the community to end homelessness and fight poverty. Here, we've got a couple of datasets from the organization which has recorded the assistance to those in need. We will perform some basic analysis on the datasets so that we could have a better view of the data and provide the stuffs of UMD with more useful information.
+[Urban Ministries of Durham](http://www.umdurham.org/) (UMD) is an organization that connects with the community to end homelessness and fight poverty. It welcomes more than 6,000 people each year who come seeking food, shelter, clothing and supportive services. It also fosters collaboration with community partners so that coordinated efforts can provide clients with longer term housing and supportive service. The organization also offers support with dignity and compassion to neighbors in need, regardless of their ability to leave homelessness at the time.  
+
+Here, we've got a couple of datasets from the organization which has recorded the assistance to those in need. We will perform some basic analysis on the datasets so that we could have a better view of the data and provide the stuffs of UMD with more useful information.
 
 Here are a list of the datasets that would be primarily used in the project, all of them can be found in the folder [/project_3/data](https://github.com/datasci611/bios611-projects-fall-2019-OSylli/tree/master/project_3/data):   
   * **CLIENT_191102.tsv**: Personal information of the clients, such as ID, age, gender, race, veteran status.   
