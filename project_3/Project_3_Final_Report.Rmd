@@ -97,7 +97,7 @@ ggplot(MonthlyEntry,aes(x=month,y=count))+
        title="Occurence of Entry in Different Months")
 ```
 
-This plot shows the number of entry to UMD in different months from 2014 to 2019. As we can see in the barplot and also the time series plot, generally speaking, there will be more clients visiting UMD during March, May and August. Although we're not sure about the reason why this happens due to a lack of knowledge, staffs and workers can make more preparations than usual during these periods, so that all the clients can be served in a proper way.
+This plot shows the number of entry to UMD in different months from 2014 to 2019. As we can see in the barplot and also the time series plot, generally speaking, there will be more clients visiting UMD during March, May, August and December. Although we're not sure about the reason why this happens due to a lack of knowledge, staffs and workers can make more preparations than usual during these periods, so that all the clients can be served in a proper way.
 
 ```{r,include=FALSE}
 library(reticulate)     # Python preparation
