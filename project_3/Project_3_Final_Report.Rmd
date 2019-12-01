@@ -1,0 +1,404 @@
+---
+title: "Project 3 Final Report"
+author: "Yilun Li"
+date: "2019/11/18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Background Information and Data Source
+
+[Urban Ministries of Durham](http://www.umdurham.org/) (UMD) is an organization that connects with the community to end homelessness and fight poverty. Here, we've got a couple of datasets from the organization which has recorded the assistance to those in need. We will perform some basic analysis on the datasets so that we could have a better view of the data and provide the stuffs of UMD with more useful information.
+
+Here are a list of the datasets that would be primarily used in the project, all of them can be found in the folder [/project_3/data](https://github.com/datasci611/bios611-projects-fall-2019-OSylli/tree/master/project_3/data):   
+  * **CLIENT_191102.tsv**: Personal information of the clients, such as ID, age, gender, race, veteran status.   
+  * **EE_UDES_191102.tsv**: Basic information of the client, such as living situation, housing status and disabling condition, etc.    
+  * **ENTRY_EXIT_191102.tsv**: Record of clients' entry to UMD and exit from UMD, such as the relevant dates, destination and reason for exits, etc.   
+  
+## Project Aim and Project Audience
+
+This project is intended for the staffs in UMD and its cooperators. We hope to provide them with more profound conclusions and facts behind the data, and offer more useful suggestions to them based on the results, so that they could make better preparations and decisions in daily management.
+
+Specifically, we're going to work on the following problems:   
+1) The trend of the number of entry to UMD over time and the possible seasonal characteristics of the number of entry.   
+2) The relationship between duration of stay at UMD and clients' gender and race   
+3) The relationship between duration of stay at UMD and clients' age, live condition and Housing status at the time of entry.
+
+While Part2 and Part3 look similar, the former one will be completed with *Python* and the latter part with *R*.
+
+By considering *Problem 1*, we hope to figure out how the number of entry to UMD change over time, so that worker at UMD can make relatively accurate prediction about the number of clients that will stay at UMD, and avoid the situation where plenty of clients are staying at UMD while the staffs do not make enough preparations, or there are just few clients but staffs prepare too much food and other materials.
+
+In *Problem 2* and *Problem 3*, we are trying to see the relationship between the duration of stay at UMD and different characteristics of clients, so that we can find out which kind of clients need long-term services from UMD most. Once such kind of clients come to visit, staffs can make adequate preparations and offer assistance in time, especially when there are a large number of clients staying at UMD.
+
+## Data Analysis
+
+```{r, include=FALSE}
+library(data.table)
+library(tidyverse)
+library(ggplot2)
+```
+
+### Question 1: The trend of the number of entry to UMD over time
+
+First of all, we read in the dataset needed, and switched the format of the date record with function *as.Date()*. Then we can start to do data wranging with functions in *tidyverse*, like dropping imcomplete records and only keeping the records after "2014-07-01", selecting the column of interest called "Entry.Date", and generating two new columns "yaer" and "month" for each item based on the current record. In order to figure out how the number of entry change over time, we finally group the data by both year and month, and count the number of entry in each month.
+
+```{r, message=FALSE}
+#---Date read in & Format of the recording of dates changed---
+EntryExit<-read.delim(url("https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-OSylli/master/project_3/data/ENTRY_EXIT_191102.tsv"))
+EntryExit$Entry.Date<-as.Date(EntryExit$Entry.Date,format="%m/%d/%Y")
+EntryExit$Exit.Date<-as.Date(EntryExit$Exit.Date,format="%m/%d/%Y")
+
+#---Data wrangling---
+Entry_Date<-as.data.frame(EntryExit) %>%
+  filter(Entry.Date>="2014-07-01") %>%      # Drop imcomplete records and only keep the records after "2014-07-01"
+  select("Entry.Date") %>%                  # Focus on the date of entry
+  mutate(year=year(Entry.Date)) %>%         # Add new column "year" to see the trend of the number of entry to UMD over time
+  mutate(month=month(Entry.Date))           # Add new column "month" to see the possible seasonal characteristics of the number of entry
+
+#---Define a new data frame with columns "year", "month" and "count"---
+EntryTrend<-Entry_Date %>%
+  group_by(year,month) %>%
+  summarise(count=n()) 
+```
+
+Here, we try something new and set up a time series with monthly data starting at July 2014, and a time series plot is also generated. 
+
+```{r}
+#---Build a time series and make a time series plot, in order to figure out its trend over time---
+TS_EntryTrend<-ts(EntryTrend$count,frequency=12,start=c(2014,7))
+TS_EntryTrend
+ts.plot(TS_EntryTrend,ylab="Occurence")
+points(TS_EntryTrend)
+title("Time Series Plot: Trend of Entry to UMD from Jul 2014 to Oct 2019")
+```
+
+In this figure, x-axis represents the time while y-axis means the number of entry. As we can see, visits to UMD peaked around late 2015 to mid 2016, and has been trending downwards to the present. Therefore, in normal situations staffs of UMD can make less amount of preparations for food and other necessary materials than 2015-2016, so that waste of time, money and resources could be avoided.
+
+Also, we want to see whether there exist any period within a year in which entries always occurs more frequently. We group the data just by month and make a bar plot as following:
+
+```{r,echo=FALSE,warning=FALSE}
+#---Build another data frame which focus on the number of entry in different months---
+MonthlyEntry<-Entry_Date %>%
+  group_by(month) %>%
+  summarise(count=n())
+MonthlyEntry$month<-as.factor(MonthlyEntry$month)
+
+#---Visualization with ggplot---
+ggplot(MonthlyEntry,aes(x=month,y=count))+
+  geom_bar(stat="identity",width=0.8,colour="black",fill="dark blue")+
+  theme_minimal()+
+  labs(x="Month",
+       y="Occuerence",
+       title="Occurence of Entry in Different Months")
+```
+
+This plot shows the number of entry to UMD in different months from 2014 to 2019. As we can see in the barplot and also the time series plot, generally speaking, there will be more clients visiting UMD during March, May and August. Although we're not sure about the reason why this happens due to a lack of knowledge, staffs and workers can make more preparations than usual during these periods, so that all the clients can be served in a proper way.
+
+```{r,include=FALSE}
+library(reticulate)     # Python preparation
+use_python("C:\\Users\\85091\\Downloads\\python-3.7.0-embed-amd64")
+use_condaenv("myenv")
+```
+
+### Question 2: The relationship between duration of stay at UMD and clients' gender and race
+
+This part is completed with *Python*. As we did in the first question, first we read in the datasets *CLIENT_191102.tsv* and *ENTRY_EXIT_191102.tsv*. Since the column "Client ID" are matched in the two datasets, we directly combine them together instead of "join". Then we switched the format of the date record with function *pd.to_datetime()* and calculate the duration to stay of each client by a simple subtraction. With "NA" dropped, we can have a glance of our new dataframe as following:
+
+```{python,include=FALSE}
+# In[1]:
+
+# Data read in
+import pandas as pd
+client = pd.read_csv('https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-OSylli/master/project_3/data/CLIENT_191102.tsv',sep='\t')
+client = client.loc[:,['Client ID', 'Client Gender', 'Client Primary Race']]
+client.head()
+```
+
+```{python,include=FALSE}
+# In[2]:
+
+# Data read in
+entry_exit = pd.read_csv('https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-OSylli/master/project_3/data/ENTRY_EXIT_191102.tsv',sep='\t')
+entry_exit = entry_exit.loc[:,['Client ID', 'Entry Date', 'Exit Date']]
+entry_exit.head()
+```
+
+```{python,echo=FALSE}
+# In[3]:
+
+# Since the column "Client ID" are matched in the two datasets, we directly combine them together
+record=pd.concat([client, entry_exit],axis=1)
+
+# Change the format of date record and calculate the duration of stay at UMD of each item
+record['Entry Date'] = pd.to_datetime(record['Entry Date'],format='%m/%d/%Y')
+record['Exit Date'] = pd.to_datetime(record['Exit Date'],format='%m/%d/%Y')
+record['Duration (Days)'] = record['Exit Date']-record['Entry Date']
+record['Duration (Days)'] = record['Duration (Days)'].map(lambda x: x.days)
+
+# Drop imcomplete record
+record = record.dropna(axis = 0, how ='any')
+
+# Output
+record.head()
+```
+    
+#### Part 1: Relationship between the duration of stay at UMD and Client Gender
+
+First we try to see the relationship between the duration of stay at UMD and client gender (normalized by the number of visit). Grouping the current data by client gender, we can generate the following dataframe.
+
+```{python,echo=FALSE}
+# In[4]:
+
+# Question 2 Part 1: Relationship between the duration of stay at UMD and Client Gender
+gender_record = {'Gender':[], 'Count':[], 'AVE_duration':[]}
+
+# Data wrangling to calculate the number and average time of stay at UMD for different gender
+for value, sub_df in record.groupby('Client Gender'):
+    tmp_ave = sub_df['Duration (Days)'].mean()
+    gender_record['Gender'].append(value)
+    gender_record['Count'].append(sub_df['Duration (Days)'].count())
+    gender_record['AVE_duration'].append(tmp_ave)
+    
+# Change the dictionary in to a dataframe and print it out
+gender_record = pd.DataFrame(gender_record)
+gender_record
+```
+
+And below is a barplot indicating the relationship between the average time of stay and client gender (normalized by the number of visit). 
+
+```{python,echo=FALSE,warning=FALSE,message=FALSE}
+# In[6]:
+
+# Load necessary packages for visualization
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import savefig
+
+# Generate a barplot to show the relationship between the average time of stay at UMD and client gender
+plt.bar(gender_record['Gender'],gender_record['AVE_duration'])
+plt.title('Relationship between the average time of stay at UMD (Days) and client gender')
+```
+
+In general, we can see that female clients tend to stay at UMD for a longer time than male and trans female clients. Also, let's see the relationship between the average time of stay at UMD and client gender:
+
+```{python,echo=FALSE,warning=FALSE,message=FALSE}
+# In[5]:
+
+# Generate a barplot to show relationship between the total number of entry and client gender
+plt.bar(gender_record['Gender'],gender_record['Count'])
+plt.title('Relationship between the total number of entry and client gender')
+```
+
+In this barplot, we can see that actually the sample size for trans female is very small, thus the average time of stay for trans female shown in the previous barplot may not be very precise when used to make prediction. So in the future, staffs need to make further record when serving tran female clients in order to have a better view of their general characteristics and make better preparations.
+
+Also, while female clients tend to stay longer, more male clients are recorded to come to visit. So staffs at UMD may consider doing more preparations for a large number of male clients with a short stay, and relatively small number female clients with a long stay.
+   
+#### Part 2: Relationship between the duration of stay at UMD and Client Race
+
+Next, we try to view more about the relationship between the duration of stay at UMD and client race (normalized by the number of visit). Grouping the data by race and calculate the number of entry and average duration of stay, we can get the following results:
+
+```{python,echo=FALSE}
+# In[7]:
+
+race_record = {'Race':[], 'Count':[], 'AVE_duration':[]}
+
+# Data wrangling
+for value, sub_df in record.groupby('Client Primary Race'):
+    tmp_ave = sub_df['Duration (Days)'].mean()
+    race_record['Race'].append(value)
+    race_record['Count'].append(sub_df['Duration (Days)'].count())
+    race_record['AVE_duration'].append(tmp_ave)
+    
+# Drop unnecessary summarized statistics
+race_record = pd.DataFrame(race_record)
+race_record = race_record.drop(5,axis=0) # drop the row in which "Data not collected" is recorded
+race_record = race_record.drop(4,axis=0) # drop the row in which "Client refused" is recorded
+race_record = race_record.drop(3,axis=0) # drop the row in which "Client doesn't know" is recorded
+
+# Output
+race_record
+```
+
+Here, we've also dropped the records which "Data not collected", "Client refused" or "Client doesn't know" is reported.
+
+As is done above, we generate a barplot which shows the average duration of stay for clients in different races. Also we need to consider the total number of entry for clients in different race at the same time.
+
+```{python,echo=FALSE,warning=FALSE,message=FALSE}
+# In[9]:
+
+# Visualization with a barplot, showing the relationship between the average time of stay at UMD and client race
+LABELS = ["1","2","3","4","5"]
+plt.bar(race_record['Race'],race_record['AVE_duration'])
+```
+
+```{python,include=FALSE,warning=FALSE,message=FALSE}
+plt.xticks(race_record['Race'],LABELS)
+```
+
+```{python,echo=FALSE,warning=FALSE,message=FALSE}
+plt.title('Relationship between the average time of stay (Days) at UMD and clients race')
+```
+  
+(Here, 1-American Indian or Alaska Native, 2-Asian, 3-Black or African American, 4-Native Hawaiian or Other Pacific Islander, 5-White)
+  
+```{python,echo=FALSE,warning=FALSE,message=FALSE}
+# In[8]:
+
+# Visualization with a barplot, shwoing the relationship between the total number of entry and client race
+LABELS = ["1","2","3","4","5"]
+
+plt.bar(race_record['Race'],race_record['Count'])
+```
+
+```{python,include=FALSE,warning=FALSE,message=FALSE}
+plt.xticks(race_record['Race'],LABELS)
+```
+
+```{python,echo=FALSE,warning=FALSE,message=FALSE}
+plt.title('Relationship between the total number of entry and clients race')
+```
+  
+(Here, 1-American Indian or Alaska Native, 2-Asian, 3-Black or African American, 4-Native Hawaiian or Other Pacific Islander, 5-White)  
+
+As we can see in the figures, generally asians tend to stay for the longest time (more than 55 days averagely), and Native Hawaiian or Other Pacific Islander tend to stay for the shortest time of period (less than 30 days averagely). But again, the sample size for these two races are relatively small as indicated in the second barplot, so we are not very sure about how accurate the average statistics can be when used for predictions, and staffs at UMD need to make further record in the future in order to have a better view.
+
+Also, clients of American Indian or Alaska Native, Black or African American, and white have a similar duration of visit. So staffs need to prepare an average of around 40 days' food, water and other materials for each client.
+  
+### Question 3: Relationship between duration of stay at UMD and clients' age, live condition and Housing status at the time of entry
+
+Finally, we turned back to *R tidyverse* and try to find the Relationship between duration of stay at UMD and clients' age, live condition and Housing status **at the time of entry**. As usual, we first read in the data *ENTRY_EXIT_191102.tsv*, *CLIENT_191102.tsv* and *EE_UDES_191102.tsv*, combine them together, drop repeated columns and add new column to show the duration of stay at UMD for each record. Here, clients that come more than once will be counted more than once, since their living condition, housing status and age may be different everytime they vist UMD.
+
+```{r,include=FALSE,warning=FALSE,message=FALSE}
+#---Question 3: The relationship between duration of stay at UMD and clients' age, live condition and Housing status at the time of entry---
+#---Data read in---
+CLIENT<-read.delim(url("https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-OSylli/master/project_3/data/CLIENT_191102.tsv"))
+QUESTION<-read.delim(url("https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-OSylli/master/project_3/data/EE_UDES_191102.tsv"))
+
+#---Since the column "Client ID" in the three tables "CLIENT", "QUESTION" and "EntryExit" are already matched, we can use rbind() directly to combine the datasets---
+record<-cbind(CLIENT,QUESTION,EntryExit)
+record<-record[,-c(11,13,14,15,32,33,34,35)]    # Drop the repeated columns
+
+#---Basic wrangling---
+record<-record %>%
+  # Add new column to calculate the duration of stay at UMD
+  mutate(duration=Exit.Date-Entry.Date) %>%
+  # Select columns of interest and rename with simpler label
+  select(Client.ID, Client.Age.at.Entry, Prior.Living.Situation.43., Housing.Status.2703., Does.the.client.have.a.disabling.condition..1935., duration) %>%
+  rename(ID="Client.ID",age="Client.Age.at.Entry",LiveCondition="Prior.Living.Situation.43.",Housing="Housing.Status.2703.",DISABLE="Does.the.client.have.a.disabling.condition..1935.")
+```
+
+#### Part 1: Relationship between duration of stay at UMD and clients' age
+
+For the first part, let's consider the relationship between duration of stay at UMD and clients' age. Grouping the data by age and drop records with "NA", we can calculate the average time of stay for clients in different ages (normalized by the time of visits). An a barplot can be generated as follows:
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+#---Part 1: Relationship between duration of stay at UMD and clients' age---
+# Data wrangling
+age_duration<-record %>%
+  drop_na() %>%
+  group_by(age) %>%
+  summarise(Count=n(),AVE_Dur=mean(duration))
+
+# Visualization with ggplot
+ggplot(age_duration,aes(x=age,y=AVE_Dur))+
+  geom_point()+
+  geom_smooth()+
+  labs(x="age",
+       y="Average time of staying in UMD (Days)",
+       title="The relationship between duration of stay and clients' age")+
+  theme_minimal()
+```
+
+In this figure, we can see that clients under 60 may stay at UMD for similar time but the elderly(60+) tend to stay longer. That's consistent with our intuition since the elderly usually need more care. And staffs and workers need to do more preparations than they usually do when older clients come to visit.
+
+#### Part 2: Relationship between duration of stay at UMD and clients' living condition
+
+Next, we turn to see the relation between duration of stay at UMD and clients' living condition. When doing data wrangling in this part, we've dropped those records in which "Client doesn't know (HUD)", "Client refused (HUD)" or "Data not collected (HUD)" is reported in addition to those with "NA". Then we group the data by live condition and calculate the average time of stay (normalized by number of visits) for each kind of live condition. A barplot is generated as following:
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE, fig.width=10, fig.height=9}
+#---Part 2: Relationship between duration of stay at UMD and clients' living condition---
+# Data wrangling
+livecon_duration<-record %>%
+  drop_na() %>%
+  filter(LiveCondition!=""&LiveCondition!="Client doesn't know (HUD)"&LiveCondition!="Client refused (HUD)"&LiveCondition!="Data not collected (HUD)") %>%
+  group_by(LiveCondition) %>%
+  summarise(Count=n(),AVE_Dur=mean(duration))
+
+# Visualization with a histogram
+ggplot(livecon_duration,aes(x=LiveCondition,y=AVE_Dur))+
+  geom_histogram(stat="identity",colour="black",fill="dark blue")+
+  labs(x="Live Condition",
+       y="Average time of staying in UMD (Days)",
+       title="The relationship between duration of stay and clients' live condition")+
+  scale_x_discrete(label=c("Emergency shelter,",
+                           "Foster care (group) home",
+                           "Hospital or residential non-psychiatric medical facility",
+                           "Hotel/motel paid for without emergency shelter voucher",
+                           "Interim Housing",
+                           "Jail, prison or juvenile detention facility",
+                           "Long-term care facility or nursing home",
+                           "Other",
+                           "Owned by client, no ongoing housing subsidy",
+                           "Owned by client, with ongoing housing subsidy",
+                           "Permanent housing for formerly homeless persons",
+                           "Place not meant for habitation",
+                           "Psychiatric hospital or other psychiatric facility",
+                           "Rental by client, no ongoing housing subsidy",
+                           "Rental by client, with GPD TIP housing subsidy",
+                           "Rental by client, with other ongoing housing subsidy",
+                           "Rental by client, with VASH housing subsidy",
+                           "Residential project or halfway house with no homeless criteria",
+                           "Safe Haven",
+                           "Staying in a family member's house",
+                           "Staying in a friend's house",
+                           "Substance abuse treatment facility or detox center",
+                           "Transitional housing for homeless persons"))+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+This figure shows the average time of stay for clients in different live conditions. And it shows that clients whose living condition is "Rental by client, with VASH housing subsidy" tend to stay at UMD for the longest time, other groups that generally stay for long include "Owned by client, no ongoing housing subsidy", "Interim Housing", "Owned by client, with ongoing housing subsidy", "Rental by client, no ongoing housing subsidy", "Rental by client, with other ongoing housing subsidy" and "Transitional housing for homeless persons". Staffs need to make more preparations and provide more assistance when these clients come for help.
+
+#### Part 3: Relationship between duration of stay at UMD and clients' housing status
+
+Finally, we're going to see the relationship between duration of stay at UMD and clients' housing status. When wrangling data for this part, we also need to drop the records in which "Client doesn't know (HUD)", "Client refused (HUD)" or "" is reported in addition tothose with "NA". Grouped by housing status and calculate the average time of stay (normalized by the times of visit), we can generate the following barplot:
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+#---Part 3: Relationship between duration of stay at UMD and clients' housing status---
+# Data wrangling
+housing_duration<-record %>%
+  drop_na() %>%
+  filter(Housing!=""&Housing!="Client doesn't know (HUD)"&Housing!="Client refused (HUD)") %>%
+  group_by(Housing) %>%
+  summarise(Count=n(),AVE_Dur=mean(duration))
+
+# Visualization with a histogram
+ggplot(housing_duration,aes(x=Housing,y=AVE_Dur))+
+  geom_histogram(stat="identity",colour="black",fill="dark blue")+
+  theme_minimal()+
+  labs(x="Housing Status",
+       y="Average time of staying in UMD (Days)",
+       title="The relationship between duration of stay and clients' housing status")+
+  scale_x_discrete(label=c("At risk\n of\n Homeless",
+                           "Homeless",
+                           "At imminent risk\n of\n losing housing",
+                           "Homeless\n only under other\n federal statutes",
+                           "Stably Housed"))
+```
+
+As we can see in the figure, clients who are "Homeless", "At imminent risk of losing housing" and "Stably Housed" usually stay for longer. And staffs need to make more preparations and provide more assistance when they come and ask for help.
+
+## Summary
+
+In this project we first figure out the trend of the number of entry to UMD over time and look for possible seasonal characteristics of the number of entry. Then we apply both *Python Pandas* and *R tidyverse* to look into the relationship between duration of stay at UMD and clients' gender, race, age, live condition and Housing status at the time of entry. Results are listed in the following:
+
+1) visits to UMD peaked around late 2015 to mid 2016, and has been trending downwards to the present.  
+2) Usually there will be more clients visiting UMD during March, May and August.     
+3) **Gender**: Female clients tend to stay longer than male (averagely 43 days VS 38 days), but the number of female clients are much smaller than male clients.   
+4) **Race**: Generally, asians tend to stay for the longest time (averagely more than 55 days), and Native Hawaiian or Other Pacific Islander tend to stay for the shortest time of period (averagely less than 30 days). But the sample size for these two races are relatively small, so we are not very sure about how accurate the average statistics can be when used for predictions. Also, clients of American Indian or Alaska Native, Black or African American, and white have a similar duration of visit for about 40 days.   
+5) **Age**: Clients under 60 may stay at UMD for similar time but the elderly(60+) tend to stay longer.  
+6) **Live conditions**: Clients whose living condition is "Rental by client, with VASH housing subsidy" tend to stay at UMD for the longest time, other groups that generally stay for long include "Owned by client, no ongoing housing subsidy", "Interim Housing", "Owned by client, with ongoing housing subsidy", "Rental by client, no ongoing housing subsidy", "Rental by client, with other ongoing housing subsidy" and "Transitional housing for homeless persons".  
+7) **Housing Status**: Clients who are "Homeless", "At imminent risk of losing housing" and "Stably Housed" usually stay for longer.
+
+Hope these information can be helpful for UMD management!
