@@ -3,24 +3,46 @@
 
 ## Background Information and Data Source
 
-[Urban Ministries of Durham](http://www.umdurham.org/) (UMD) is an organization that connects with the community to end homelessness and fight poverty. Here, we've got a couple of datasets from the organization which has recorded the assistance to those in need. We will perform some basic analysis on the datasets so that we could have a better view of the data and provide the stuffs of UMD with more useful information.
+[Urban Ministries of Durham](http://www.umdurham.org/) (UMD) is an organization that connects with the community to end homelessness and fight poverty. It welcomes more than 6,000 people each year who come seeking food, shelter, clothing and supportive services. It also fosters collaboration with community partners so that coordinated efforts can provide clients with longer term housing and supportive service. The organization also offers support with dignity and compassion to neighbors in need, regardless of their ability to leave homelessness at the time.  
 
-Here are a list of the datasets that would be primarily used in the project, all of them can be found in the folder */project_3/data*:   
+Here, we've got a couple of datasets from the organization which has recorded the assistance to those in need. We will perform some basic analysis on the datasets so that we could have a better view of the data and provide the stuffs of UMD with more useful information.
+
+Here are a list of the datasets that would be primarily used in the project, all of them can be found in the folder [/project_3/data](https://github.com/datasci611/bios611-projects-fall-2019-OSylli/tree/master/project_3/data):   
   * **CLIENT_191102.tsv**: Personal information of the clients, such as ID, age, gender, race, veteran status.   
-  * **EE_UDES_191102.tsv**: Basic information of the client, such as living situation, housing status and disabling condition, etc.
+  * **EE_UDES_191102.tsv**: Basic information of the client, such as living situation, housing status and disabling condition, etc.    
   * **ENTRY_EXIT_191102.tsv**: Record of clients' entry to UMD and exit from UMD, such as the relevant dates, destination and reason for exits, etc.   
   
 ## Project Aim and Project Audience
 
-This project is intended for the staffs in UMD and its cooperators. We hope to provide them with more profound conclusions and facts behind the data, and offer more useful suggestions to them based on the results, so that they could make better preparations and dicisions in daily management.
+This project is intended for the staffs in UMD and its cooperators. We hope to provide them with more profound conclusions and facts behind the data, and offer more useful suggestions to them based on the results, so that they could make better preparations and decisions in daily management.
 
 Specifically, we're going to work on the following problems:   
-1) The trend of the number of entry to UMD over years and the possible seasonal characteristics of the number of entry.   
+1) The trend of the number of entry to UMD over time and the possible seasonal characteristics of the number of entry.   
 2) The relationship between duration of stay at UMD and clients' gender and race   
 3) The relationship between duration of stay at UMD and clients' age, live condition and Housing status at the time of entry.
 
 While Part2 and Part3 look similar, the former one will be completed with *Python* and the latter part with *R*.
 
+By considering *Problem 1*, we hope to figure out how the number of entry to UMD change over time, so that worker at UMD can make relatively accurate prediction about the number of clients that will stay at UMD, and avoid the situation where plenty of clients are staying at UMD while the staffs do not make enough preparations, or there are just few clients but staffs prepare too much food and other materials.
+
+In *Problem 2* and *Problem 3*, we are trying to see the relationship between the duration of stay at UMD and different characteristics of clients, so that we can find out which kind of clients need long-term services from UMD most. Once such kind of clients come to visit, staffs can make adequate preparations and offer assistance in time, especially when there are a large number of clients staying at UMD.
+
 ## Methods for Data Analysis and Results Presentation
 
-In this project, we will use both package "tidyverse" from *R Studio* and "pandas" from *Python* to do data wrangling and visualization. Results will be presented with the assistance of figures like histograms. Also, we will apply *Make* in this project as a workflow manager, and *Dockerfile* to define execution environments. All the scripts would be saved to the folder */project_3/scripts*. An HTML will be generated as a final project.
+In this project, we will use both package "tidyverse" from *R Studio* and "pandas" from *Python* to do data wrangling and visualization. Results will be presented with the assistance of figures like histograms. Also, we will apply *Make* in this project as a workflow manager, and *Dockerfile* to define execution environments. All the scripts would be saved to the folder [/project_3/scripts](https://github.com/datasci611/bios611-projects-fall-2019-OSylli/tree/master/project_3/scripts). An HTML will be generated as a final project.
+
+## Instructions on how to run the code on VCL
+To generate the plots and results of the project, please log onto VCL and run the following code in order:
+
+(step 1) Git Clone and navigate into my project folder
+`git clone https://github.com/datasci611/bios611-projects-fall-2019-OSylli.git && cd bios611-projects-fall-2019-OSylli/project_3/scripts`
+
+(step 2) Run the following code  
+`chmod +x Dockerfile.PythonScript`  
+`chmod +x Dockerfile.RScript`  
+`chmod +x Makefile`  
+
+(step 3) Generage the results  
+`docker build -f ./Dockerfile.PythonScript .`  
+`docker build -f ./Dockerfile.RScript .`  
+`make -f Makefile`  
