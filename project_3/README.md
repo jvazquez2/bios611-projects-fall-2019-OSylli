@@ -42,7 +42,7 @@ To generate the plots and results of the project, please log onto VCL and run th
 `chmod +x Dockerfile.RScript`  
 `chmod +x Makefile`  
 
-(step 3) Generage the results  
+(step 3) Generate the results  
 `docker build -f ./Dockerfile.PythonScript .`  
 `docker build -f ./Dockerfile.RScript .`  
 `make -f Makefile`  
