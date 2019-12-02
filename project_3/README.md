@@ -29,7 +29,9 @@ In *Problem 2* and *Problem 3*, we are trying to see the relationship between th
 
 ## Methods for Data Analysis and Results Presentation
 
-In this project, we will use both package "tidyverse" from *R Studio* and "pandas" from *Python* to do data wrangling and visualization. Results will be presented with the assistance of figures like histograms. Also, we will apply *Make* in this project as a workflow manager, and *Dockerfile* to define execution environments. All the scripts would be saved to the folder [/project_3/scripts](https://github.com/datasci611/bios611-projects-fall-2019-OSylli/tree/master/project_3/scripts). An HTML will be generated as a final project.
+In this project, we will use both package "tidyverse" from *R Studio* and "pandas" from *Python* to do data wrangling and visualization. Results will be presented with the assistance of figures like histograms. Also, we will apply *Make* in this project as a workflow manager, and *Dockerfile* to define execution environments.    
+
+All the scripts would be saved to the folder [/project_3/scripts](https://github.com/datasci611/bios611-projects-fall-2019-OSylli/tree/master/project_3/scripts). An HTML will be generated as a final project.
 
 ## Instructions on how to run the code on VCL
 To generate the plots and results of the project, please log onto VCL and run the following code in order:
